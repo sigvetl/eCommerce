@@ -48,15 +48,15 @@ public class UserController {
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
 		Cart cart = new Cart();
-		cartRepository.save(cart);
 		user.setCart(cart);
 		if (createUserRequest.getPassword().length() < 7 ||
 				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
-			//log.info("User {} authenticated, JWT issued", ((User) auth.getPrincipal()).getUsername());
+			log.info("User {} authenticated, JWT issued", ((User) auth.getPrincipal()).getUsername());
 			return ResponseEntity.badRequest().build();
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 		userRepository.save(user);
+		cartRepository.save(cart);
 		return ResponseEntity.ok(user);
 	}
 	
