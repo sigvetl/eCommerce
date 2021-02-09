@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
+
+	final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -39,16 +41,19 @@ public class CartController {
 	public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user == null) {
+			logger.info("Cannot find user with username {}", request.getUsername());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		Optional<Item> item = itemRepository.findById(request.getItemId());
 		if(!item.isPresent()) {
+			logger.info("Cannot find item with id {}", request.getItemId());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		Cart cart = user.getCart();
 		IntStream.range(0, request.getQuantity())
 			.forEach(i -> cart.addItem(item.get()));
 		cartRepository.save(cart);
+		logger.info("Item {} with quantity {} added to cart", itemRepository.getOne(request.getItemId()).getName(), request.getQuantity());
 		return ResponseEntity.ok(cart);
 	}
 	
@@ -56,16 +61,19 @@ public class CartController {
 	public ResponseEntity<Cart> removeFromcart(@RequestBody ModifyCartRequest request) {
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user == null) {
+			logger.info("Cannot find item with id {}", request.getItemId());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		Optional<Item> item = itemRepository.findById(request.getItemId());
 		if(!item.isPresent()) {
+			logger.info("Cannot find item with id {}", request.getItemId());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		Cart cart = user.getCart();
 		IntStream.range(0, request.getQuantity())
 			.forEach(i -> cart.removeItem(item.get()));
 		cartRepository.save(cart);
+		logger.info("Item {} with quantity {} removed from cart", itemRepository.getOne(request.getItemId()).getName(), request.getQuantity());
 		return ResponseEntity.ok(cart);
 	}
 		

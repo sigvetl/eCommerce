@@ -16,10 +16,6 @@ import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
 
-import org.springframework.security.core.Authentication;
-
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +24,6 @@ import org.slf4j.LoggerFactory;
 public class UserController {
 
 	final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -55,15 +49,15 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		logger.info("Username set with value: ", createUserRequest.getUsername());
+		logger.info("Username set with value: {}", createUserRequest.getUsername());
 		Cart cart = new Cart();
 		user.setCart(cart);
 		if (createUserRequest.getPassword().length() < 7 ||
 				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
-			logger.error("Cannot create user {} Error with password", createUserRequest.getUsername());
+			logger.error("Error with password. Cannot create user {}", createUserRequest.getUsername());
 			return ResponseEntity.badRequest().build();
 		}
-		logger.info("User {} authenticated, JWT issued", ((User) auth.getPrincipal()).getUsername());
+		logger.info("User {} authenticated, JWT issued", createUserRequest.getUsername());
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 		userRepository.save(user);
 		cartRepository.save(cart);
