@@ -2,7 +2,6 @@ package com.example.demo.controllers;
 
 import com.example.demo.Data;
 import com.example.demo.TestUtils;
-import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
