@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven_3_6_3' 
+        maven 'maven_3_6_3' 
     }
 
     stages {
@@ -18,8 +18,7 @@ pipeline {
         }
         stage('Run') {
             steps{
-                sh 'cd target/
-		   java -cp auth-course-0.0.1-SNAPSHOT.jar:dependency auth-course'
+                sh 'cd target/ java -cp auth-course-0.0.1-SNAPSHOT.jar:dependency auth-course'
             }
         }
     }
